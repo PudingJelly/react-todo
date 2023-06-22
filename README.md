@@ -35,3 +35,15 @@ $ npm install @mui/icons-material
 $ npm install react-router-dom
 ```
 꼭 프로젝트 폴더에서 인스톨 실행하기!!
+
+## 리액트 라우터 설정
+ - index.js에 BrowserRouter 컴포넌트로 App 컴포넌트 감싸기.
+ 
+ ```javascript
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <BrowserRouter> 
+    <App />
+  </BrowserRouter>  
+);
+```
