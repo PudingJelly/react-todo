@@ -38,7 +38,7 @@ const Login = () => {
             return;
         }
 
-        const { token, userName, eamil, role } = await res.json();
+        const { token, userName, email, role } = await res.json();
         // console.log(json);
 
         
