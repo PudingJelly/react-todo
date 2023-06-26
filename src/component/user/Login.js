@@ -2,9 +2,12 @@ import React from 'react'
 import {Button, Container, Grid,
     TextField, Typography, Link} from "@mui/material";
 import { API_BASE_URL as BASE, USER } from '../../config/host-config';
+import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
+
+    const redirection = useNavigate();
 
     const REQUEST_URL = BASE + USER + '/signin';
 
@@ -35,8 +38,29 @@ const Login = () => {
             return;
         }
 
-        const json = await res.json();
-        console.log(json);
+        const { token, userName, eamil, role } = await res.json();
+        // console.log(json);
+
+        
+        // json에 담긴 인증 정보를 클라이언트에 보관
+        // 1. 로컬 스토리지 - 브라우저가 종료되어도 보관이 가능.
+        localStorage.setItem('ACCESS_TOKEN', token) // key, value
+        localStorage.setItem('LOGIN_USERNAME', userName) // key, value
+        localStorage.setItem('USER_ROLE', role) // key, value
+        
+        // 2. 세션 스토리지 - 브라우저가 종료되면 사라짐.
+        /*
+        sessionStorage.setItem('ACCESS_TOKEN', token) // key, value
+        sessionStorage.setItem('LOGIN_USERNAME', userName) // key, value
+        sessionStorage.setItem('USER_ROLE', role) // key, value
+        */        
+        
+        // 홈으로 리다이렉트(엄밀히 따지면 리다이렉트는 없다는걸 인지)
+        redirection('/');
+
+
+        ////////////////////////////////////////////////////////////////////////////
+
 
         // fetch(REQUEST_URL, {
         //     method: 'POST',
@@ -113,9 +137,7 @@ const Login = () => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            color="primary"
-                            
-
+                            color="primary"              
                         >
                             로그인
                         </Button>
