@@ -1,29 +1,34 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {AppBar, Toolbar, Grid, 
     Typography, Button} from "@mui/material";
 import './header.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { isLogin, getLoginUserInfo } from '../../util/login-utils';
+import AuthContext from '../../util/AuthContext';
 
 
 const Header = () => {
 
     const redirection = useNavigate();
 
-    const [userInfo, setUserInfo] = useState({});
+    // AuthContext에서 로그인 상태와 onLogout 함수를 가져옵니다.
+    const { isLoggedIn, onLogout } = useContext(AuthContext);
 
-    const { token, userName, role } = userInfo;
+    // const [userInfo, setUserInfo] = useState({});
+    // const { token, userName, role } = userInfo;
 
     // 로그아웃 핸들러
     const logoutHandler = e => {
-        localStorage.clear();
+        //AuthContext의 onLogout 함수를 호출하여 로그인 상태를 업데이트 합니다.
+        onLogout();
+        // localStorage.clear();
         redirection('/login');
     }
     
 
-    useEffect(() => {
-        setUserInfo(getLoginUserInfo());
-    }, []);
+    // useEffect(() => {
+    //     setUserInfo(getLoginUserInfo());
+    // }, []);
 
 
 
@@ -44,10 +49,9 @@ const Header = () => {
                         }>
                             <Typography variant="h4">
                                 {
-                                    isLogin()
+                                    isLoggedIn
                                     ? userName + '님'
                                     : '오늘'
-
                                 }
                                 의 할 일
                             </Typography>   
