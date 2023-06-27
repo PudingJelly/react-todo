@@ -6,7 +6,8 @@ const AuthContext = React.createContext({
     isLoggedIn: false, //로그인 했는지의 여부
     userName: '',
     onLogout: () => {}, // 더미 함수를 넣으면 자동완성 시 편함.
-    onLogin: (email, password) => {}
+    onLogin: (email, password) => {},
+    setUserInfo: () => {}
 });
 
 
@@ -54,13 +55,21 @@ export const AuthContextProvider = props => {
         setUserName(userName);
     };
 
+    // 토큰 및 로그인 유저 데이터를 브라우저에 저장하는 함수
+    const setLoginUserInfo = ({ token, userName, role }) => {
+        localStorage.setItem('ACCESS_TOKEN', token) // key, value
+        localStorage.setItem('LOGIN_USERNAME', userName) // key, value
+        localStorage.setItem('USER_ROLE', role) // key, value
+    }
+
 
     return (
         <AuthContext.Provider value={{
             isLoggedIn: isLoggedIn,
             userName, // key값과 value값이 같으면 변수 생략가능
             onLogout: logoutHandler,
-            onLogin: loginHandler
+            onLogin: loginHandler,
+            setUserInfo: setLoginUserInfo
         }}>
             {props.children}
         </AuthContext.Provider>

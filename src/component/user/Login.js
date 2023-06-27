@@ -10,8 +10,9 @@ const Login = () => {
 
     const redirection = useNavigate();
 
+    
     // AuthContext에서 onLogin 함수를 가져옵니다.
-    const { onLogin } = useContext(AuthContext);
+    const { onLogin, isLoggedIn } = useContext(AuthContext);
 
     const REQUEST_URL = BASE + USER + '/signin';
 

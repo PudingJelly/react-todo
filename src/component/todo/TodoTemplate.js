@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import TodoHeader from './TodoHeader'
 import TodoMain from './TodoMain';
 import TodoInput from './TodoInput';
 import './scss/TodoTemplate.scss';
-import { API_BASE_URL as BASE, TODO } from '../../config/host-config';
+import { API_BASE_URL as BASE, TODO, USER } from '../../config/host-config';
 import { useNavigate } from 'react-router-dom';
 import { getLoginUserInfo } from '../../util/login-utils';
 import { Spinner } from 'reactstrap';
+import AuthContext from '../../util/AuthContext';
 
 
 const TodoTemplate = () => {
 
   // 로딩 상태값 관리
   const [loading, setLoading] = useState(true);
+  // 로그인 인증 토큰 얻어오기
+  const [token, setToken] = useState(getLoginUserInfo().token);
 
 
   const redirection = useNavigate();
 
-  // 로그인 인증 토큰 얻어오기
-  const { token } = getLoginUserInfo();
+  const{ setUserInfo } = useContext(AuthContext);
+
   
   // 요청 헤더 설정
   const requestHeader = {
@@ -30,6 +33,7 @@ const TodoTemplate = () => {
 
   // 서버에 할 일 목록(json)을 요청(fetch)해서 받아와야 함.
   const API_BASE_URL = BASE + TODO;
+  const API_USER_URL = BASE + USER;
   
   // todos 배열을 상태 관리
   const [todos, setTodos] = useState([]);
@@ -68,9 +72,14 @@ const TodoTemplate = () => {
       headers : requestHeader,
       body : JSON.stringify(newTodo)
     })
-    .then(res => res.json())
+    .then(res => {
+      if(res.status === 200) return res.json();
+      else if(res.status === 401) {
+        alert('일반회원은 일정등록이 5개로 제한됩니다 ㅠㅠ');
+      }
+    })
     .then(json => {
-      setTodos(json.todos);
+      json && setTodos(json.todos);
     });
 
   }
@@ -147,6 +156,31 @@ const TodoTemplate = () => {
     return todos.filter(todo => !todo.done).length;    
   }
 
+  // 비동기 방식 등급 승격 함수
+  const fetchPromote = async() => {
+
+    const res = await fetch(API_USER_URL + '/promote', {
+      method: 'PUT',
+      headers: requestHeader
+    });
+
+    if(res.status === 403) {
+      alert('이미 프리미엄 회원입니다.');
+    } else if(res.status === 200) {
+      const json = await res.json();
+      // console.log(json);
+      setUserInfo(json);
+      setToken(json.token);
+    }
+  }
+
+
+  // 등급 승격 서버 요청(프리미엄)
+  const promote = () => {
+    // console.log('등급 승격 서버 요청!');
+    fetchPromote();
+  }
+
 
   useEffect(() => {
 
@@ -182,7 +216,10 @@ const TodoTemplate = () => {
   // 로딩이 끝난 후 보여줄 컴포넌트
   const loadEndedPage = (
     <>
-      <TodoHeader count={countRestTodo}/>
+      <TodoHeader 
+        count={countRestTodo}
+        promote={promote}
+        />
         <TodoMain 
           todoList={todos} 
           remove={removeTodo} 
