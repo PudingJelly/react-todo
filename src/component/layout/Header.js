@@ -12,7 +12,7 @@ const Header = () => {
     const redirection = useNavigate();
 
     // AuthContext에서 로그인 상태와 onLogout 함수를 가져옵니다.
-    const { isLoggedIn, onLogout } = useContext(AuthContext);
+    const { isLoggedIn, onLogout, userName } = useContext(AuthContext);
 
     // const [userInfo, setUserInfo] = useState({});
     // const { token, userName, role } = userInfo;
