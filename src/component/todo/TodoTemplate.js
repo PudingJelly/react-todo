@@ -233,7 +233,6 @@ const TodoTemplate = () => {
   const loadingPage = (
     <div className='loading'>
       <Spinner color='danger'>
-        loading...
       </Spinner>
     </div>  
   );
