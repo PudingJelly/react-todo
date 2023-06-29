@@ -7,7 +7,9 @@
 $ npm install -g create-react-app
 ```
 3. react 프로젝트 생성
-
+```
+$ npx create-react-app 프로젝트이름
+```
 4. react 프로젝트 실행
 ```
 $ cd 프로젝트 폴더
